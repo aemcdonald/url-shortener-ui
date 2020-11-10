@@ -16,3 +16,13 @@ export const postNewURL = (newURL) => {
   .then(data => console.log('success'))
   .catch(err => console.log('failed', err.message))
 }
+
+export const deleteURL = (urlID) => {
+    return fetch(`http://localhost:3001/api/v1/urls/${urlID}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (!response.ok) throw Error
+    })
+    .catch(err => console.log('failed', err.message));
+}

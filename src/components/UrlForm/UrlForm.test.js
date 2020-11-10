@@ -47,4 +47,43 @@ describe('UrlForm', () => {
 
     expect(mockAddNewURL).toHaveBeenCalledTimes(1)
   })
+
+  it('Should fire a function when the delete button is clicked', () => {
+    const mockAddNewURL = jest.fn()
+    const { getByText, getByPlaceholderText } = render(<UrlForm addNewURL={mockAddNewURL}/>)
+
+    const titleInput = getByPlaceholderText('Title...')
+    const urlInput = getByPlaceholderText('URL to Shorten...')
+    const btn = getByText('Shorten Please!')
+
+    userEvent.type(titleInput, ('elephant'))
+    userEvent.type(urlInput, ('https://www.shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689'))
+    userEvent.click(btn)
+
+    expect(mockAddNewURL).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not fire function if form not filled out', () => {
+    const mockAddNewURL = jest.fn()
+    const { getByText, getByPlaceholderText } = render(<UrlForm addNewURL={mockAddNewURL}/>)
+
+    const titleInput = getByPlaceholderText('Title...')
+    const urlInput = getByPlaceholderText('URL to Shorten...')
+    const btn = getByText('Shorten Please!')
+
+    userEvent.type(titleInput, ('elephant'))
+    userEvent.click(btn)
+
+    expect(mockAddNewURL).toHaveBeenCalledTimes(0)
+
+    userEvent.type(urlInput, ('https://www.shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689'))
+    userEvent.click(btn)
+    expect(mockAddNewURL).toHaveBeenCalledTimes(0)
+
+    userEvent.type(titleInput, ('elephant'))
+    userEvent.type(urlInput, ('https://www.shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689'))
+    userEvent.click(btn)
+
+    expect(mockAddNewURL).toHaveBeenCalledTimes(1)
+  })
 })

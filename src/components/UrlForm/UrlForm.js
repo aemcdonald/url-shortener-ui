@@ -17,7 +17,7 @@ class UrlForm extends Component {
   handleSubmit = e => {
     //need to check that title & urlToShorten are NOT empty strings
     if (this.state.title !== '' && this.state.urlToShorten !== '') {
-      const newURL = { long_url: this.state.urlToShorten, title: this.state.title }
+      const newURL = { long_url: this.state.urlToShorten, title: this.state.title, id: Date.now() }
       this.props.addNewURL(newURL)
     }
     e.preventDefault();
