@@ -8,11 +8,18 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      urls: []
+      urls: [],
+      error: ''
     }
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    try {
+      const allURLs = await getUrls()
+      this.setState({ urls: allURLs.urls})
+    } catch(error) {
+      this.setState({ error: 'Failed to retrieve URLs'})
+    }
   }
 
   render() {
