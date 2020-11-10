@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { getUrls } from '../../apiCalls';
+import { getUrls, postNewURL } from '../../apiCalls';
 import UrlContainer from '../UrlContainer/UrlContainer';
 import UrlForm from '../UrlForm/UrlForm';
 
@@ -22,12 +22,17 @@ export class App extends Component {
     }
   }
 
+  addNewURL = (newURL) => {
+    postNewURL(newURL)
+    this.setState({ urls: [...this.state.urls, newURL]})
+  }
+
   render() {
     return (
       <main className="App">
         <header>
           <h1>URL Shortener</h1>
-          <UrlForm />
+          <UrlForm addNewURL={this.addNewURL}/>
         </header>
 
         <UrlContainer urls={this.state.urls}/>
