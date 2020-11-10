@@ -78,7 +78,7 @@ describe('App', () => {
 
     userEvent.click(btn)
 
-    const newCardTitle = await waitFor(() => getByText('tiger'))
+    //const newCardTitle = await waitFor(() => getByText('tiger'))
     // const newURLs = await waitFor(() => queryAllByText('short-url'))
     //const newURL = await waitFor(() => getByText('http://localhost:3001/useshorturl/4'))
     //const longURL = await waitFor(() => getByText('google.com/search?q=tiger+picture&sxsrf=ALeKk00MI8KLi65NzYsFz_nx6UxKwVTaGw:1605029365162&tbm=isch&source=iu&ictx=1&fir=uhb5lPyfxwV5GM%252CV7d3lFgXfu8H2M%252C_&vet=1&usg=AI4_-kSSDcuIGuxIXyh3OKnz1aavAkAsQg&sa=X&ved=2ahUKEwiDhKipwPjsAhUTZc0KHUXkC28Q9QF6BAgBEFg&biw=923&bih=665#imgrc=uhb5lPyfxwV5GM'))
@@ -91,7 +91,132 @@ describe('App', () => {
     //I would make sure that I am mocking my fetch request & mocking my post request before rendering app
     //I would then simulate a user typing into the title & url fields followed by clicking submit
     //I would then check that the new card has rendered to the dom
-    expect(newCardTitle).toBeInTheDocument()
-    expect(newURL).toBeInTheDocument();
+
+    //expect(newCardTitle).toBeInTheDocument()
+    //expect(newURL).toBeInTheDocument();
+  })
+
+
+
+  //AFTER SUBMISION PASSING TEST:
+  //the following test passes with the way my code was on submission
+    //in order to successfully mock my post, I needed to mock a NEW fetch whith
+    // the newly submitted URL
+    //I realized that I could refactor my code to use a return from the post
+    // & then add the return to state to mock a POST without having to mock an additional fetch
+    //The last test demonstrates this
+
+  it('Should render a new card when the form is submitted', async () => {
+
+    getUrls.mockResolvedValueOnce({
+      urls: [
+        {
+          id: 8,
+          long_url: 'shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689',
+          short_url:"http://localhost:3001/useshorturl/8",
+          title: 'elephant'
+        },
+        {
+          id: 9,
+          long_url: 'google.com/search?q=zebra+long+url&sxsrf=ALeKk00IxkXDynzfhJyPfea7DPvisp-kZQ:1605026422683&tbm=isch&source=iu&ictx=1&fir=9-pSLzjF5nR6dM%252CyCSMjUhml8-aAM%252C_&vet=1&usg=AI4_-kRMCGoSNvXXFDJdanR0XOA3kWnJKQ&sa=X&ved=2ahUKEwjUo52utfjsAhUKHs0KHdRaDGcQ9QF6BAgKEAg#imgrc=9-pSLzjF5nR6dM',
+          short_url:"http://localhost:3001/useshorturl/9",
+          title: 'zebra'
+        }
+      ]
+    })
+
+    postNewURL.mockResolvedValue(
+      { id: 1,
+        long_url: 'google.com/search?q=tiger+picture&sxsrf',
+        short_url: 'http://localhost:3001/useshorturl/1',
+        title: 'tiger'
+      }
+    )
+
+    getUrls.mockResolvedValueOnce({
+      urls: [
+        {
+          id: 8,
+          long_url: 'shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689',
+          short_url:"http://localhost:3001/useshorturl/8",
+          title: 'elephant'
+        },
+        {
+          id: 9,
+          long_url: 'google.com/search?q=zebra+long+url&sxsrf=ALeKk00IxkXDynzfhJyPfea7DPvisp-kZQ:1605026422683&tbm=isch&source=iu&ictx=1&fir=9-pSLzjF5nR6dM%252CyCSMjUhml8-aAM%252C_&vet=1&usg=AI4_-kRMCGoSNvXXFDJdanR0XOA3kWnJKQ&sa=X&ved=2ahUKEwjUo52utfjsAhUKHs0KHdRaDGcQ9QF6BAgKEAg#imgrc=9-pSLzjF5nR6dM',
+          short_url:"http://localhost:3001/useshorturl/9",
+          title: 'zebra'
+        },
+        { id: 1,
+          long_url: 'google.com/search?q=tiger+picture&sxsrf',
+          short_url: 'http://localhost:3001/useshorturl/1',
+          title: 'tiger'
+        }
+
+      ]
+    })
+
+    const { getByText, getByPlaceholderText, getByTestId } = render(<App />)
+
+    const titleInput = getByPlaceholderText('Title...')
+    const urlInput = getByPlaceholderText('URL to Shorten...')
+    const btn = getByText('Shorten Please!')
+
+    userEvent.type(titleInput, ('tiger'))
+    expect(titleInput).toHaveValue('tiger')
+    userEvent.type(urlInput, ('google.com/search?q=tiger+picture&sxsrf=ALeKk00MI8KLi65NzYsFz_nx6UxKwVTaGw:1605029365162&tbm=isch&source=iu&ictx=1&fir=uhb5lPyfxwV5GM%252CV7d3lFgXfu8H2M%252C_&vet=1&usg=AI4_-kSSDcuIGuxIXyh3OKnz1aavAkAsQg&sa=X&ved=2ahUKEwiDhKipwPjsAhUTZc0KHUXkC28Q9QF6BAgBEFg&biw=923&bih=665#imgrc=uhb5lPyfxwV5GM'))
+    expect(urlInput).toHaveValue('google.com/search?q=tiger+picture&sxsrf=ALeKk00MI8KLi65NzYsFz_nx6UxKwVTaGw:1605029365162&tbm=isch&source=iu&ictx=1&fir=uhb5lPyfxwV5GM%252CV7d3lFgXfu8H2M%252C_&vet=1&usg=AI4_-kSSDcuIGuxIXyh3OKnz1aavAkAsQg&sa=X&ved=2ahUKEwiDhKipwPjsAhUTZc0KHUXkC28Q9QF6BAgBEFg&biw=923&bih=665#imgrc=uhb5lPyfxwV5GM')
+
+    userEvent.click(btn)
+
+    const newCardTitle = await waitFor(() => getByText('tiger'))
+    const newURL = await waitFor(() => getByText('http://localhost:3001/useshorturl/1'))
+    expect(newCardTitle).toBeInTheDocument();
+    expect(newURL)
+    expect(newCardTitle).toBeInTheDocument();
+  })
+
+//successful mock of fetch after refactoring fetch to use return value:
+  it('should submit a form & display it', async () => {
+    getUrls.mockResolvedValueOnce({
+      urls: [
+        {
+          id: 8,
+          long_url: 'shutterstock.com/image-illustration/elephant-stands-on-thin-branch-withered-1407435689',
+          short_url:"http://localhost:3001/useshorturl/8",
+          title: 'elephant'
+        },
+        {
+          id: 9,
+          long_url: 'google.com/search?q=zebra+long+url&sxsrf=ALeKk00IxkXDynzfhJyPfea7DPvisp-kZQ:1605026422683&tbm=isch&source=iu&ictx=1&fir=9-pSLzjF5nR6dM%252CyCSMjUhml8-aAM%252C_&vet=1&usg=AI4_-kRMCGoSNvXXFDJdanR0XOA3kWnJKQ&sa=X&ved=2ahUKEwjUo52utfjsAhUKHs0KHdRaDGcQ9QF6BAgKEAg#imgrc=9-pSLzjF5nR6dM',
+          short_url:"http://localhost:3001/useshorturl/9",
+          title: 'zebra'
+        }
+      ]
+    })
+
+    postNewURL.mockResolvedValue(
+      { id: 4,
+        long_url: 'www.superlongurlsuperlongurlsuperlongurl',
+        short_url: 'http://localhost:3001/useshorturl/4',
+        title: 'bears'
+      }
+    )
+
+    const { getByText, getByPlaceholderText, getByTestId } = render(<App />)
+
+    const titleInput = getByPlaceholderText('Title...')
+    const urlInput = getByPlaceholderText('URL to Shorten...')
+    const btn = getByText('Shorten Please!')
+
+    userEvent.type(titleInput, ('bears'))
+    expect(titleInput).toHaveValue('bears')
+    userEvent.type(urlInput, ('www.superlongurlsuperlongurlsuperlongurl'))
+    expect(urlInput).toHaveValue('www.superlongurlsuperlongurlsuperlongurl')
+
+    userEvent.click(btn)
+
+    const newTitle = await waitFor(() => getByText('bears'))
+    const newURL = await waitFor(() => getByText('http://localhost:3001/useshorturl/4'))
   })
 })
