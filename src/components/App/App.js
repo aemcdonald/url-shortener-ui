@@ -22,15 +22,27 @@ export class App extends Component {
     }
   }
 
+  //REFACTOR:
   addNewURL = async (newURL) => {
-    await postNewURL(newURL)
     try {
-      const allURLs = await getUrls()
-      this.setState({ urls: allURLs.urls})
+      const updatedURLs = await postNewURL(newURL)
+      this.setState( { urls: [...this.state.urls, updatedURLs] })
     } catch(error) {
       this.setState({ error: 'Failed to retrieve URLs'})
     }
   }
+
+  //PREVIOUS CODE:
+  // addNewURL = async (newURL) => {
+  //   await postNewURL(newURL)
+  //   try {
+  //     const allURLs = await getUrls()
+  //     this.setState({ urls: allURLs.urls})
+  //   } catch(error) {
+  //     this.setState({ error: 'Failed to retrieve URLs'})
+  //   }
+  // }
+
 
   deleteURL = async (urlID) => {
     try {
